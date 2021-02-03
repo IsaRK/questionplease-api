@@ -12,7 +12,7 @@ namespace questionplease_api
 {
     public static class ReadOneQuestion
     {
-        [FunctionName("ReadQuestion")]
+        [FunctionName("ReadOneQuestion")]
         public static IActionResult Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "question/{id}")] HttpRequest req,
             [CosmosDB(
@@ -33,24 +33,6 @@ namespace questionplease_api
 
             log.LogInformation($"Found Question item, Description={question.First().FullQuestion}");
             return new OkObjectResult(question.First());
-        }
-    }
-
-    public static class ReadAllQuestion
-    {
-        [FunctionName("ReadAllQuestions")]
-        public static IActionResult Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "question")] HttpRequest req,
-            [CosmosDB(
-                databaseName: Constants.DATABASE_NAME,
-                collectionName: Constants.COLLECTION_NAME,
-                ConnectionStringSetting = "CONNECTION_STRING",
-                SqlQuery ="SELECT * FROM c")] IEnumerable<Question> question,
-            ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
-            return new OkObjectResult(question);
         }
     }
 }
