@@ -31,13 +31,17 @@ namespace questionplease_api
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DATABASE_NAME, Constants.USERS_COLLECTION_NAME);
 
             var searchValue = claimsPrincipal.GetObjectId();
-            var otherValue = claimsPrincipal.GetNameIdentifierId();
+            var homeObjectValue = claimsPrincipal.GetHomeObjectId();
+            var msalAccountValue = claimsPrincipal.GetMsalAccountId();
 
             log.LogInformation($"Searching for: {searchValue}");
-            log.LogInformation($"Name Identifier ID: {otherValue}");
+            log.LogInformation($"Home Object ID: {homeObjectValue}");
+            log.LogInformation($"Home Object ID: {msalAccountValue}");
             string name = req.Query["name"];
 
-            IDocumentQuery<User> query = client.CreateDocumentQuery<User>(collectionUri)
+            var option = new FeedOptions { EnableCrossPartitionQuery = true };
+
+            IDocumentQuery<User> query = client.CreateDocumentQuery<User>(collectionUri, option)
                 .Where(p => p.HomeAccountId == searchValue)
                 .AsDocumentQuery();
 
