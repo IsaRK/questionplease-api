@@ -12,6 +12,7 @@ using Microsoft.Identity.Web;
 using Microsoft.Azure.Documents.Linq;
 using questionplease_api.Items;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace questionplease_api
 {
@@ -33,10 +34,14 @@ namespace questionplease_api
             var searchValue = claimsPrincipal.GetObjectId();
             var homeObjectValue = claimsPrincipal.GetHomeObjectId();
             var msalAccountValue = claimsPrincipal.GetMsalAccountId();
+            var identityName = claimsPrincipal.Identity.Name;
+            var NameIdentifierId = claimsPrincipal.GetNameIdentifierId();
 
             log.LogInformation($"Searching for: {searchValue}");
             log.LogInformation($"Home Object ID: {homeObjectValue}");
-            log.LogInformation($"Home Object ID: {msalAccountValue}");
+            log.LogInformation($"MSAL Account Value ID: {msalAccountValue}");
+            log.LogInformation($"IdentityName: {identityName}");
+            log.LogInformation($"Name Identifier Id: {NameIdentifierId}");
             string name = req.Query["name"];
 
             var option = new FeedOptions { EnableCrossPartitionQuery = true };
@@ -45,15 +50,17 @@ namespace questionplease_api
                 .Where(p => p.HomeAccountId == searchValue)
                 .AsDocumentQuery();
 
+            List<User> result = new List<User>();
+
             while (query.HasMoreResults)
             {
-                foreach (User result in await query.ExecuteNextAsync())
+                foreach (User user in await query.ExecuteNextAsync())
                 {
-                    log.LogInformation(result.Login);
+                    result.Add(user);
                 }
             }
-            return new OkResult();
-            //return new OkObjectResult(responseMessage);
+
+            return new OkObjectResult(result);
         }
     }
 }
