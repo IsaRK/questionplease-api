@@ -4,7 +4,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using questionplease_api.Items;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,11 +16,10 @@ namespace questionplease_api
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "question/{id}")] HttpRequest req,
             [CosmosDB(
                 databaseName: Constants.DATABASE_NAME,
-                collectionName: Constants.COLLECTION_NAME,
-                ConnectionStringSetting = "CONNECTION_STRING",
+                collectionName: Constants.QUESTIONS_COLLECTION_NAME,
+                ConnectionStringSetting = Constants.CONNECTION_STRING,
                 SqlQuery ="SELECT * FROM c WHERE c.id={id}")] IEnumerable<Question> question,
-            ILogger log,
-            string id)
+            ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
