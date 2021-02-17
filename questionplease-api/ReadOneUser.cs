@@ -35,13 +35,23 @@ namespace questionplease_api
             var homeObjectValue = claimsPrincipal.GetHomeObjectId();
             var msalAccountValue = claimsPrincipal.GetMsalAccountId();
             var identityName = claimsPrincipal.Identity.Name;
+            var identityString = claimsPrincipal.Identity.ToString();
             var NameIdentifierId = claimsPrincipal.GetNameIdentifierId();
+            var currentUserName = ClaimsPrincipal.Current.Identity.Name;
+            var otherIdentity = ClaimsPrincipal.Current.Identity.ToString();
+            var currentHomeObjectValue = ClaimsPrincipal.Current.GetHomeObjectId();
+            var currentMsalAccountId = ClaimsPrincipal.Current.GetMsalAccountId();
 
             log.LogInformation($"Searching for: {searchValue}");
             log.LogInformation($"Home Object ID: {homeObjectValue}");
             log.LogInformation($"MSAL Account Value ID: {msalAccountValue}");
             log.LogInformation($"IdentityName: {identityName}");
             log.LogInformation($"Name Identifier Id: {NameIdentifierId}");
+            log.LogInformation($"IdentityString Id: {identityString}");
+            log.LogInformation($"currentUserName Id: {currentUserName}");
+            log.LogInformation($"otherIdentity Id: {otherIdentity}");
+            log.LogInformation($"currentHomeObjectValue Id: {currentHomeObjectValue}");
+            log.LogInformation($"currentMsalAccountId Id: {currentMsalAccountId}");
             string name = req.Query["name"];
 
             var option = new FeedOptions { EnableCrossPartitionQuery = true };
