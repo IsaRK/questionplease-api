@@ -31,48 +31,10 @@ namespace questionplease_api
 
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DATABASE_NAME, Constants.USERS_COLLECTION_NAME);
 
-            var searchValue = claimsPrincipal.GetObjectId();
-            var homeObjectValue = claimsPrincipal.GetHomeObjectId();
-            var msalAccountValue = claimsPrincipal.GetMsalAccountId();
-            var identityName = claimsPrincipal.Identity.Name;
-            var identityString = claimsPrincipal.Identity.ToString();
-            var NameIdentifierId = claimsPrincipal.GetNameIdentifierId();
-            //var currentUserName = ClaimsPrincipal.Current.Identity.Name;
-            //var otherIdentity = ClaimsPrincipal.Current.Identity.ToString();
-            //var currentHomeObjectValue = ClaimsPrincipal.Current.GetHomeObjectId();
-            //var currentMsalAccountId = ClaimsPrincipal.Current.GetMsalAccountId();
+            //Also works : req.Headers.TryGetValue("X-MS-CLIENT-PRINCIPAL-NAME", out var principalName) = Isabelle Riverain
+            //req.Headers.TryGetValue("X-MS-CLIENT-PRINCIPAL-ID", out var principalId) = AccountInfo.LocalAccountId
 
-            if (req.Headers.TryGetValue("X-MS-CLIENT-PRINCIPAL-NAME", out var principalName))
-            {
-                log.LogInformation($"principalName Id: {principalName}");
-            }
-            else
-            {
-                log.LogInformation($"No principalName");
-            }
-
-            if (req.Headers.TryGetValue("X-MS-CLIENT-PRINCIPAL-ID", out var principalId))
-            {
-                log.LogInformation($"principalId Id: {principalId}");
-            }
-            else
-            {
-                log.LogInformation($"No principalId");
-            }
-
-            if (ClaimsPrincipal.Current == null)
-            {
-                log.LogInformation($"ClaimsPrincipal.Current is null");
-            }
-            else if (ClaimsPrincipal.Current.Identity == null)
-            {
-                log.LogInformation($"ClaimsPrincipal.Current.Identity is null");
-            }
-            else
-            {
-                log.LogInformation($"ClaimsPrincipal.Current.Identity is {ClaimsPrincipal.Current.Identity.ToString()}");
-            }
-
+            string searchValue = null;
             var userReq = req.HttpContext.User;
             if (userReq == null)
             {
@@ -80,36 +42,37 @@ namespace questionplease_api
             }
             else
             {
-                log.LogInformation($"User from context: {userReq.GetDisplayName()}");
+                searchValue = userReq.GetDisplayName();
+                log.LogInformation($"searchedValue is {searchValue}");
             }
 
-
-            log.LogInformation($"Searching for: {searchValue}");
-            log.LogInformation($"Home Object ID: {homeObjectValue}");
-            log.LogInformation($"MSAL Account Value ID: {msalAccountValue}");
-            log.LogInformation($"IdentityName: {identityName}");
-            log.LogInformation($"Name Identifier Id: {NameIdentifierId}");
-            log.LogInformation($"IdentityString Id: {identityString}");
-            //log.LogInformation($"currentUserName Id: {currentUserName}");
-            //log.LogInformation($"otherIdentity Id: {otherIdentity}");
-            //log.LogInformation($"currentHomeObjectValue Id: {currentHomeObjectValue}");
-            //log.LogInformation($"currentMsalAccountId Id: {currentMsalAccountId}");
             string name = req.Query["name"];
 
             var option = new FeedOptions { EnableCrossPartitionQuery = true };
 
-            IDocumentQuery<User> query = client.CreateDocumentQuery<User>(collectionUri, option)
-                .Where(p => p.HomeAccountId == searchValue)
+            IDocumentQuery<DatabaseUser> query = client.CreateDocumentQuery<DatabaseUser>(collectionUri, option)
+                .Where(p => p.UserName == searchValue)
                 .AsDocumentQuery();
 
-            List<User> result = new List<User>();
+            List<DatabaseUser> result = new List<DatabaseUser>();
 
             while (query.HasMoreResults)
             {
-                foreach (User user in await query.ExecuteNextAsync())
+                foreach (DatabaseUser user in await query.ExecuteNextAsync())
                 {
                     result.Add(user);
                 }
+            }
+
+            if (result.Count > 1)
+            {
+                return new ObjectResult($"Found several users with userName {searchValue}");
+            }
+
+            List<ReturnedUser> okResult = new List<ReturnedUser>();
+            foreach(var u in result)
+            {
+                var returnUser = new ReturnedUser { Id = u.Id, Login = u.Login };
             }
 
             return new OkObjectResult(result);
