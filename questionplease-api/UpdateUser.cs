@@ -17,7 +17,7 @@ namespace questionplease_api
     {
         [FunctionName("UpdateUser")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/{id:string}/{login:string}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/{id}/{login}")] HttpRequest req,
             [CosmosDB(databaseName: Constants.DATABASE_NAME,
                 collectionName: Constants.USERS_COLLECTION_NAME,
                 ConnectionStringSetting = Constants.CONNECTION_STRING)] IAsyncCollector<object> users,

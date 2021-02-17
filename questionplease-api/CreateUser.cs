@@ -15,7 +15,7 @@ namespace questionplease_api
     {
         [FunctionName("CreateUser")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "user/{login:string}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "user/{login}")] HttpRequest req,
             [CosmosDB(databaseName: Constants.DATABASE_NAME,
                 collectionName: Constants.USERS_COLLECTION_NAME,
                 ConnectionStringSetting = Constants.CONNECTION_STRING)] IAsyncCollector<object> users,
