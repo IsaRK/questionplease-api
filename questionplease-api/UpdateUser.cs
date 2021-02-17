@@ -17,10 +17,12 @@ namespace questionplease_api
     {
         [FunctionName("UpdateUser")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "users")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/{id:string}/{login:string}")] HttpRequest req,
             [CosmosDB(databaseName: Constants.DATABASE_NAME,
                 collectionName: Constants.USERS_COLLECTION_NAME,
                 ConnectionStringSetting = Constants.CONNECTION_STRING)] IAsyncCollector<object> users,
+            string id,
+            string login,
             ILogger log)
         {
             try
@@ -28,10 +30,6 @@ namespace questionplease_api
                 log.LogInformation("C# HTTP trigger function processed a request.");
 
                 string name = req.Query["name"];
-
-                IDictionary<string, string> queryParams = req.GetQueryParameterDictionary();
-                var login = queryParams["login"];
-                var id = queryParams["id"];
 
                 string userName = null;
                 var userReq = req.HttpContext.User;
