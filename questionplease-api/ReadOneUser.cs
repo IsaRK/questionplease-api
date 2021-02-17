@@ -24,8 +24,7 @@ namespace questionplease_api
             [CosmosDB(databaseName: Constants.DATABASE_NAME,
                 collectionName: Constants.USERS_COLLECTION_NAME,
                 ConnectionStringSetting = Constants.CONNECTION_STRING)] DocumentClient client,
-            ILogger log,
-            ClaimsPrincipal claimsPrincipal)
+            ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -66,16 +65,18 @@ namespace questionplease_api
 
             if (result.Count > 1)
             {
-                return new ObjectResult($"Found several users with userName {searchValue}");
+                log.LogError($"Found several users with userName {searchValue}");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
             List<ReturnedUser> okResult = new List<ReturnedUser>();
             foreach(var u in result)
             {
                 var returnUser = new ReturnedUser { Id = u.Id, Login = u.Login };
+                okResult.Add(returnUser);
             }
 
-            return new OkObjectResult(result);
+            return new OkObjectResult(okResult);
         }
     }
 }
