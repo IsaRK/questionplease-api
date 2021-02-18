@@ -69,14 +69,17 @@ namespace questionplease_api
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            List<ReturnedUser> okResult = new List<ReturnedUser>();
-            foreach(var u in result)
+            ReturnedUser returnUser;
+            if (result.Count == 0)
             {
-                var returnUser = new ReturnedUser { Id = u.Id, Login = u.Login };
-                okResult.Add(returnUser);
+                returnUser = null;
+            }
+            else
+            {
+                returnUser = new ReturnedUser { Id = result[0].Id, Login = result[0].Login };
             }
 
-            return new OkObjectResult(okResult);
+            return new OkObjectResult(returnUser);
         }
     }
 }
