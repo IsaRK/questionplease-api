@@ -9,6 +9,9 @@ namespace questionplease_api.Items
 
         [JsonProperty(PropertyName = "login")]
         public string Login { get; set; }
+
+        [JsonProperty(PropertyName = "score")]
+        public int Score { get; set; }
     }
 
     public class DatabaseUser : ReturnedUser

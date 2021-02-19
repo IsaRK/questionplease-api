@@ -13,9 +13,10 @@ using Microsoft.Identity.Web;
 
 namespace questionplease_api
 {
-    public static class UpdateUser
+    public static class UpdateUserLogin
     {
-        [FunctionName("UpdateUser")]
+        //NOT USED - Score to update (maybe) if we want to use it
+        [FunctionName("UpdateUserLogin")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/{id}/{login}")] HttpRequest req,
             [CosmosDB(databaseName: Constants.DATABASE_NAME,
@@ -47,7 +48,8 @@ namespace questionplease_api
                 {
                     Id = id, //on garde le même Id, CosmosDB update automatiquement
                     UserName = userName,
-                    Login = login
+                    Login = login,
+                    //TO DO : Score
                 };
 
                 await users.AddAsync(newUser);

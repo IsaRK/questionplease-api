@@ -9,6 +9,7 @@ using System.Security.Claims;
 
 namespace questionplease_api
 {
+    /*
     public static class ReadAllQuestions
     {
         [FunctionName("ReadAllQuestions")]
@@ -31,4 +32,5 @@ namespace questionplease_api
             return new OkObjectResult(question);
         }
     }
+    */
 }

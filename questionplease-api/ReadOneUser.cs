@@ -76,7 +76,7 @@ namespace questionplease_api
             }
             else
             {
-                returnUser = new ReturnedUser { Id = result[0].Id, Login = result[0].Login };
+                returnUser = new ReturnedUser { Id = result[0].Id, Login = result[0].Login, Score = result[0].Score };
             }
 
             return new OkObjectResult(returnUser);

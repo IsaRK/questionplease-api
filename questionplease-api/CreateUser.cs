@@ -44,12 +44,13 @@ namespace questionplease_api
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = userName,
-                    Login = login
+                    Login = login,
+                    Score = 0
                 };
 
                 await users.AddAsync(newUser);
 
-                return new OkObjectResult(new ReturnedUser { Id = newUser.Id, Login = newUser.Login});
+                return new OkObjectResult(new ReturnedUser { Id = newUser.Id, Login = newUser.Login, Score = newUser.Score});
             }
             catch (Exception ex)
             {
