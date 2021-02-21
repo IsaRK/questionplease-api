@@ -57,12 +57,19 @@ namespace questionplease_api
                 string correctAnswer = await GetCorrectAnswer(questionId, log);
 
                 bool isValid = IsAnswerValid(userAnswer, correctAnswer, out int points);
+                log.LogInformation($"User has correct answer for questionId {questionId} : {isValid}");
+
                 var user = await GetUser(userId, log);
+                log.LogInformation($"Current User userName : {user.UserName} and score {user.Score}");
+
                 var currentScore = user.Score;
 
                 if (isValid)
                 {
-                    await UpdateUserScore(user, currentScore + points, log);
+                    var newTotalScore = currentScore + points;
+                    log.LogInformation($"Answer is valid, new score is {newTotalScore}");
+
+                    await UpdateUserScore(user, newTotalScore, log);
                     await InsertUserQuestionsLog(userId, questionId, points, log);
                 }
                 else
@@ -161,6 +168,8 @@ namespace questionplease_api
 
         private Task InsertUserQuestionsLog(string userId, int questionId, int points, ILogger log)
         {
+            log.LogInformation($"Inserting new log : UserId {userId}, questionId {questionId}, points {points}");
+
             var toInsert = new UserQuestionsLog
             {
                 Id = Guid.NewGuid().ToString(),
