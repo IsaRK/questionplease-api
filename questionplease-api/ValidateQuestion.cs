@@ -146,6 +146,7 @@ namespace questionplease_api
 
         private Task UpdateUserScore(DatabaseUser user, int newScore, ILogger log)
         {
+            log.LogInformation($"Updating user {user.Id} score with {newScore}");
             var toUpdate = new DatabaseUser
             {
                 Id = user.Id,
@@ -154,7 +155,7 @@ namespace questionplease_api
                 Score = newScore,
             };
 
-            _userContainer.CreateItemAsync(toUpdate);
+            _userContainer.UpsertItemAsync(toUpdate);
             return Task.CompletedTask;
         }
 
