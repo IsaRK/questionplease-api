@@ -40,7 +40,7 @@ namespace questionplease_api
 
         [FunctionName("GetTop3Users")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "users/top")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/top")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
