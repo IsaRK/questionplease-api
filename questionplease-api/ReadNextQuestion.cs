@@ -1,13 +1,10 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web;
 using questionplease_api.Items;
@@ -87,8 +84,19 @@ namespace questionplease_api
                 QueryDefinition questionAsked = new QueryDefinition("select value max(u.idQuestion) from userQuestionsLog u where u.idUser = @idUser and u.questionDone = true")
                     .WithParameter("@idUser", usersWithUserName[0].Id);
 
-                var selectMax = _userQuestionLogContainer.GetItemQueryIterator<int>(questionAsked);
-                lastQuestionAsked = (await selectMax.ReadNextAsync()).Single();
+                using (FeedIterator<int> feedIterator = _userQuestionLogContainer.GetItemQueryIterator<int>(questionAsked))
+                {
+                    while (feedIterator.HasMoreResults)
+                    {
+                        foreach (var question in await feedIterator.ReadNextAsync())
+                        {
+                            if (question > lastQuestionAsked)
+                            {
+                                lastQuestionAsked = question;
+                            }
+                        }
+                    }
+                }
 
                 List<ReturnedQuestion> nextQuestionList = new List<ReturnedQuestion>();
                 QueryDefinition nextQuestion = new QueryDefinition("select * from questions u where u.id = @id").WithParameter("@id", (lastQuestionAsked + 1).ToString());

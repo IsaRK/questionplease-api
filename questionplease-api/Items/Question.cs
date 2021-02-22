@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Net;
 
 namespace questionplease_api.Items
 {
@@ -13,7 +14,7 @@ namespace questionplease_api.Items
         public ReturnedQuestion(Question question)
         {
             this.Id = question.Id;
-            this.FullQuestion = question.FullQuestion;
+            this.FullQuestion = WebUtility.HtmlDecode(question.FullQuestion);
         }
     }
 

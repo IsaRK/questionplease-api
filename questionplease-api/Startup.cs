@@ -1,11 +1,9 @@
 ﻿using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using questionplease_api;
 using System;
-using System.Linq;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace questionplease_api
