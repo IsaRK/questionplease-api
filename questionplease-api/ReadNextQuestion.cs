@@ -90,7 +90,7 @@ namespace questionplease_api
                 var selectMax = _userQuestionLogContainer.GetItemQueryIterator<int>(questionAsked);
                 lastQuestionAsked = (await selectMax.ReadNextAsync()).Single();
 
-                List<Question> nextQuestionList = new List<Question>();
+                List<ReturnedQuestion> nextQuestionList = new List<ReturnedQuestion>();
                 QueryDefinition nextQuestion = new QueryDefinition("select * from questions u where u.id = @id").WithParameter("@id", (lastQuestionAsked + 1).ToString());
                 using (FeedIterator<Question> feedIterator = _questionContainer.GetItemQueryIterator<Question>(nextQuestion))
                 {
@@ -98,7 +98,7 @@ namespace questionplease_api
                     {
                         foreach (var question in await feedIterator.ReadNextAsync())
                         {
-                            nextQuestionList.Add(question);
+                            nextQuestionList.Add(new ReturnedQuestion(question));
                         }
                     }
                 }

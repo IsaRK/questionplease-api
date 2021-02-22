@@ -2,6 +2,21 @@
 
 namespace questionplease_api.Items
 {
+    public class ReturnedQuestion
+    {
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+
+        [JsonProperty(PropertyName = "question")]
+        public string FullQuestion { get; set; }
+
+        public ReturnedQuestion(Question question)
+        {
+            this.Id = question.Id;
+            this.FullQuestion = question.FullQuestion;
+        }
+    }
+
     public class Question
     {
         [JsonProperty(PropertyName = "id")]

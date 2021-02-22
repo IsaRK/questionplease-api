@@ -30,7 +30,7 @@ namespace questionplease_api
             }
 
             log.LogInformation($"Found Question item, Description={question.First().FullQuestion}");
-            return new OkObjectResult(question.First());
+            return new OkObjectResult(new ReturnedQuestion(question.First()));
         }
     }
 }
