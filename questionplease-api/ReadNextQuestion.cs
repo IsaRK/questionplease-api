@@ -84,21 +84,11 @@ namespace questionplease_api
                 }
 
                 int lastQuestionAsked = 0;
-                QueryDefinition questionAsked = new QueryDefinition("select * from userQuestionsLog u where u.id = @id")
-                    .WithParameter("@id", usersWithUserName[0].Id);
-                using (FeedIterator<UserQuestionsLog> feedIterator = _userQuestionLogContainer.GetItemQueryIterator<UserQuestionsLog>(questionAsked))
-                {
-                    while (feedIterator.HasMoreResults)
-                    {
-                        foreach (var userQuestion in await feedIterator.ReadNextAsync())
-                        {
-                            if (int.Parse(userQuestion.IdQuestion) > lastQuestionAsked)
-                            {
-                                lastQuestionAsked = int.Parse(userQuestion.IdQuestion);
-                            }
-                        }
-                    }
-                }
+                QueryDefinition questionAsked = new QueryDefinition("select value max(u.idQuestion) from userQuestionsLog u where u.idUser = @idUser and u.questionDone = true")
+                    .WithParameter("@idUser", usersWithUserName[0].Id);
+
+                var selectMax = _userQuestionLogContainer.GetItemQueryIterator<int>(questionAsked);
+                lastQuestionAsked = (await selectMax.ReadNextAsync()).Single();
 
                 List<Question> nextQuestionList = new List<Question>();
                 QueryDefinition nextQuestion = new QueryDefinition("select * from questions u where u.id = @id").WithParameter("@id", (lastQuestionAsked + 1).ToString());
