@@ -81,7 +81,7 @@ namespace questionplease_api
                 }
 
                 int lastQuestionAsked = 0;
-                QueryDefinition questionAsked = new QueryDefinition("select value max(u.idQuestion) from userQuestionsLog u where u.idUser = @idUser and u.questionDone = true")
+                QueryDefinition questionAsked = new QueryDefinition("select value max(StringToNumber(u.idQuestion)) from userQuestionsLog u where u.idUser = @idUser and u.questionDone = true")
                     .WithParameter("@idUser", usersWithUserName[0].Id);
 
                 using (FeedIterator<int> feedIterator = _userQuestionLogContainer.GetItemQueryIterator<int>(questionAsked))
