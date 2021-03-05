@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using questionplease_api.Items;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace questionplease_api
 {
@@ -55,6 +56,7 @@ namespace questionplease_api
                 string userAnswer = data?.answer;
 
                 string correctAnswer = await GetCorrectAnswer(questionId, log);
+                correctAnswer = WebUtility.HtmlDecode(correctAnswer);
 
                 bool isValid = IsAnswerValid(userAnswer, correctAnswer, out int points);
                 log.LogInformation($"User has correct answer for questionId {questionId} : {isValid}");
